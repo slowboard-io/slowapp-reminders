@@ -22,6 +22,10 @@ class Render(unittest.TestCase):
             self.assertTrue(doc["prompts"], "something is due at 10:00")
             self.assertEqual(json.loads((Path(out) / "prompts.json").read_text()), doc)
             for p in doc["prompts"]:
+                self.assertEqual(p["ask"], f"prompts/{p['id']}/ask.png")
+                ask = Image.open(Path(out) / p["ask"]).convert("RGB")
+                self.assertEqual(ask.size, (452, 444))
+                self.assertLessEqual({c for _, c in ask.getcolors(1 << 16)}, INKS)
                 self.assertEqual(set(p["bindings"]), {"own.tap", "spare.tap", "own.hold", "spare.hold"})
                 for b in p["bindings"].values():
                     img = Image.open(Path(out) / b["show"]).convert("RGB")

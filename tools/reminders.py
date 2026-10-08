@@ -553,6 +553,16 @@ def prompt_surface():
     return DEFAULT_SURFACE
 
 
+def _fit(body, w, h, white, body_h):
+    """A card drawn BODY_H tall onto the prompts surface (w x h), cropped or padded with white."""
+    from PIL import Image
+    if body.size == (w, h):
+        return body
+    canvas = Image.new("RGB", (w, h), white)
+    canvas.paste(body.crop((0, 0, w, min(h, body_h))), (0, 0))
+    return canvas
+
+
 def render(out, now=None, path=None, horizon=None, note=lambda m: None):
     """Write out/prompts.json and out/prompts/<instance>/<binding>.png; returns the document."""
     import shutil
@@ -574,21 +584,21 @@ def render(out, now=None, path=None, horizon=None, note=lambda m: None):
             later = p["start"]                            # render again then (timing.json)
             break
         panel = item.get("panel") if item.get("panel") in ORDER else "right"
+        ask = cards.ask_card(w, dict(title=item["title"], question=item.get("question") or item["title"],
+                                     at=p["occurrence"].strftime("%H:%M"), footer=describe(item)))
+        _save_k4(_fit(ask, w, h, cards.PW, BODY_H), os.path.join(out, f"prompts/{iid}/ask.png"))
         bindings = {}
         for name, who, kind, ans in BINDINGS:
             key = SPARE if who == "spare" else KEY_OF[panel]
             rest = rem.answer(item["id"], ans, via=f"{key} key {kind}", now=p["start"], dry=True)
-            body = cards.rest_card(w, rest)
-            if body.size != (w, h):
-                canvas = Image.new("RGB", (w, h), cards.PW)
-                canvas.paste(body.crop((0, 0, w, min(h, BODY_H))), (0, 0))
-                body = canvas
+            body = _fit(cards.rest_card(w, rest), w, h, cards.PW, BODY_H)
             show = f"prompts/{iid}/{name}.png"
             _save_k4(body, os.path.join(out, show))
             bindings[name] = dict(show=show, strip=rest.get("strip", ""),
                                   emit=dict(kind="answer", data=dict(rid=item["id"], answer=ans,
                                                                      occurrence=p["occurrence"].isoformat(timespec="minutes"))))
         prompts.append(dict(id=iid, group=item["id"], slot_hint=panel, question=item.get("question") or item["title"],
+                            ask=f"prompts/{iid}/ask.png",
                             **{"from": to_aware(p["start"]).isoformat(timespec="seconds"),
                                "until": to_aware(p["until"]).isoformat(timespec="seconds")},
                             bindings=bindings))

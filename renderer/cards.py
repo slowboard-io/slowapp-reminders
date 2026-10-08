@@ -236,6 +236,43 @@ def rest_card(w, rest):
     return img
 
 
+def ask_card(w, ask):
+    """The question card of a due reminder: the slot's whole body while it asks. The answers are
+    on the keys, drawn in the strip below, so the card itself offers nothing to press.
+    `ask`: title, question (may be empty: the title asks), at (the due time), footer."""
+    img = Image.new("RGB", (w, BODY_H), PW)
+    d = ImageDraw.Draw(img)
+    d.fontmode = "1"
+    x, x1 = 18, w - 16
+    d.text((x, 10), "REMINDER", font=cond(16), fill=PR)
+    if ask.get("at"):
+        d.text((x1, 10), ask["at"], font=cond(16, False), fill=PK, anchor="ra")
+    title, question = ask.get("title", ""), (ask.get("question") or "").strip()
+    top = 38
+    if question and question != title:
+        for line in wrap(d, title, serif(30), x1 - x, 2):
+            d.text((x, top), line, font=serif(30), fill=PK)
+            top += 40
+    else:
+        question = title
+    # The question, as large as fits in four lines, centred between the title and the footer.
+    bottom = BODY_H - 34
+    for size in (44, 38, 32):
+        lines = wrap(d, question, sans(size), x1 - x - 12, 4)
+        lh = size + 10
+        if len(lines) * lh <= bottom - top:
+            break
+    y = top + (bottom - top - len(lines) * lh) // 2
+    d.rectangle((x - 6, y + 2, x - 1, y + len(lines) * lh - 8), fill=PY)   # the strip's yellow
+    for line in lines:
+        d.text((x + 8, y), line, font=sans(size), fill=PK)
+        y += lh
+    if ask.get("footer"):
+        d.text((x, BODY_H - 14), ask["footer"], font=cond(14, False), fill=PK, anchor="ls")
+    d.text((x1, BODY_H - 14), "answer below \u2193", font=cond(14), fill=PK, anchor="rs")
+    return img
+
+
 def body(panel, state, deck, cards=CARDS):
     x0, x1 = PANELS[panel]
     w = x1 - x0 + 1
