@@ -1,0 +1,30 @@
+# Reminders (epaper-dashboard docs/SLOWBOARD.md §10 P4a): prompts for due reminders, each with its
+# four answers' rest cards. P4a step one: the render job only. The page (editing reminders) and the
+# `event` job (applying answers) still live in the legacy page until P4b.
+[app]
+id = "reminders"
+title = "Reminders"
+contract = 3
+image = "ghcr.io/mike-anderson/slowapp-reminders"
+memory = "48m"
+tmp = "8m"
+timeout_s = 30
+network = "none"
+prompts = true
+imports = ["legacy:reminders"]   # P4 transitional: reminders.json, owned by the legacy page
+
+[[job]]
+name = "render"
+expected_s = 3
+daily = "00:01"
+
+[[feed]]
+name = "prompts"
+size = "slot"
+
+[[example]]
+name = "due"
+caption = "6 Oct 2026 10:00: watering due, NexGuard re-asks at 18:00, the vet at 15:00"
+fixture = "fixtures/two-due"
+now = "2026-10-06T10:00:00-07:00"
+feeds = { prompts = "452x444.k4" }

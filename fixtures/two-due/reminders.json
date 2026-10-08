@@ -1,0 +1,73 @@
+{
+ "items": [
+  {
+   "id": "a1b2c3d4e5",
+   "title": "Plants",
+   "question": "Water the plants?",
+   "repeat": "daily",
+   "time": "09:00",
+   "retry": "18:00",
+   "enabled": true,
+   "panel": "middle",
+   "state": {
+    "since": "2026-10-01T00:00"
+   },
+   "log": []
+  },
+  {
+   "id": "f00dfeed01",
+   "title": "NexGuard",
+   "repeat": "monthly",
+   "day": 6,
+   "time": "07:45",
+   "retry": "18:00",
+   "enabled": true,
+   "panel": "right",
+   "log": [],
+   "state": {
+    "since": "2026-09-01T00:00",
+    "next_ask": "2026-10-06T18:00:00",
+    "last": {
+     "answer": "not_yet",
+     "at": "2026-10-06T08:00",
+     "occurrence": "2026-10-06T07:45:00",
+     "via": "page"
+    }
+   }
+  },
+  {
+   "id": "0ce0ce0ce0",
+   "title": "Call the vet",
+   "repeat": "once",
+   "date": "2026-10-06",
+   "time": "15:00",
+   "enabled": true,
+   "panel": "left",
+   "state": {
+    "since": "2026-10-01T00:00"
+   },
+   "log": []
+  },
+  {
+   "id": "d0d0d0d0d0",
+   "title": "Pills",
+   "repeat": "daily",
+   "time": "07:00",
+   "enabled": true,
+   "state": {
+    "since": "2026-10-01T00:00",
+    "done_for": "2026-10-06T07:00:00"
+   },
+   "log": []
+  },
+  {
+   "id": "0ff0ff0ff0",
+   "title": "Off",
+   "repeat": "daily",
+   "time": "09:00",
+   "enabled": false,
+   "state": {},
+   "log": []
+  }
+ ]
+}
