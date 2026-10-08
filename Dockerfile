@@ -1,5 +1,5 @@
 # The reminders slowapp: Pillow only, on the slim base (pinned by tag and digest; Dependabot bumps it).
-FROM ghcr.io/mike-anderson/slowapp-python:1.1.1@sha256:5e5180b252d6e179460e7f6baf868a697a7c424a919a228b420a30e6406354c3
+FROM ghcr.io/mike-anderson/slowapp-python:1.2.0@sha256:5cc196d93d9960643d51eac7a49f46fe4eb9a1c4f68deba0f60579ea9559a532
 COPY slowapp.toml /app/slowapp.toml
 # renderer/assets/fonts is a symlink to the base's /opt/slowapp/fonts.
 COPY epd /opt/app/epd
